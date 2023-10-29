@@ -1,3 +1,3 @@
-# youtube-remove-short-videos
+# youtube-remove-short-long-videos
 
 Coming soon
