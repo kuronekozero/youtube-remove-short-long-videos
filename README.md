@@ -11,7 +11,7 @@ Videos like this can be removed:
 
 ## How does it work?
 
-The script works by scanning the videos in your YouTube recommendations and removing any that are shorter than a specified minimum duration or longer than a specified maximum duration. By default, these durations are set to remove videos shorter than 1 minute and longer than 10 minutes, but these can be easily adjusted to suit your preferences.
+The script works by scanning the videos in your YouTube recommendations and removing any that are shorter than a specified minimum duration or longer than a specified maximum duration. By default, these durations are set to remove videos shorter than 1 minute and longer than 1 hour(by default max duration is disabled), but these can be easily adjusted to suit your preferences.
 
 ## Customizing the Duration Thresholds
 
