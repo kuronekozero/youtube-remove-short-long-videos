@@ -2,7 +2,7 @@
 
 This Tampermonkey script is designed to customize your YouTube recommendations by removing videos that are either too short or too long. It operates by scanning the videos in your YouTube recommendations and removing any that do not fall within the specified duration range.
 
-Videos like this will be removed:
+Videos like this can be removed:
 
 <p float="left">
   <img src="image_example1.png" width=250 height=220>
