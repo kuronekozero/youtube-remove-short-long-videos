@@ -1,5 +1,3 @@
-# youtube-remove-short-long-videos
-
 # YouTube: Remove Videos Based on Duration
 
 This Tampermonkey script is designed to customize your YouTube recommendations by removing videos that are either too short or too long. It operates by scanning the videos in your YouTube recommendations and removing any that do not fall within the specified duration range.
