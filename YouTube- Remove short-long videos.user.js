@@ -1,71 +1,47 @@
 // ==UserScript==
-// @name         YouTube: Remove short/long videos
+// @name         YouTube: Remove Videos Based on Duration
 // @namespace    http://tampermonkey.net/
-// @version      0.1
+// @version      0.2
 // @description  Remove too short or too long videos from your YouTube's recommendation
 // @author       Timothy (kuronek0zero)
 // @namespace    https://github.com/kuronekozero/youtube-remove-short-long-videos/tree/main
 // @match        https://www.youtube.com/*
 // @grant        GM_addStyle
 // @license      MIT
+// @downloadURL https://update.greasyfork.org/scripts/478560/YouTube%3A%20Remove%20Videos%20Based%20on%20Duration.user.js
+// @updateURL https://update.greasyfork.org/scripts/478560/YouTube%3A%20Remove%20Videos%20Based%20on%20Duration.meta.js
 // ==/UserScript==
 
 (function() {
-    'use strict';
+    const userMinVideoDuration = 120; // Minimum duration in seconds (1 minute)
+    // const userMaxVideoDuration = 600; // Maximum duration in seconds (10 minutes) uncomment this part if you want to also remove too long videos
 
-   // You can enable both max and min duration filtering by uncommenting
-   // minDuration and maxDuration. Or you can uncomment only one of this lines
-   // to filter videos by only one variable.
-   //
-   // For now only minDuration filtering is enabled.
-
-    var minDuration = "1:40"; // Minimum duration
-
-    // Uncomment the next line to enable Max duration filtering
-    // var maxDuration = "30:00"; // Maximum duration
-
-    var timeToSeconds = function(time) {
-        var parts = time.split(':').map(Number);
-        if (parts.length === 3) {
-            return parts[0] * 3600 + parts[1] * 60 + parts[2];
-        } else {
-            return parts[0] * 60 + parts[1];
+    function getDurationInSeconds(durationText) {
+        const timeParts = durationText.split(":").map(Number);
+        if (timeParts.length === 2) {
+            return timeParts[0] * 60 + timeParts[1]; // MM:SS
+        } else if (timeParts.length === 3) {
+            return timeParts[0] * 3600 + timeParts[1] * 60 + timeParts[2]; // HH:MM:SS
         }
+        return 0;
     }
 
+    function removeVideos() {
+        const videos = document.querySelectorAll('ytd-video-renderer, ytd-grid-video-renderer, ytd-rich-item-renderer');
 
-    var getVideoRows = function() {
-        var contents = document.querySelector(
-            'div#contents[class="style-scope ytd-rich-grid-renderer"]'
-        );
-        return contents.childNodes;
-    }
+        videos.forEach(video => {
+            const durationElement = video.querySelector('.badge-shape-wiz__text');
+            if (durationElement) {
+                const durationText = durationElement.textContent.trim();
+                const durationInSeconds = getDurationInSeconds(durationText);
 
-    var processVideoRow = function(row) {
-        var videos = row.querySelectorAll('ytd-rich-item-renderer');
-        for (var i=0; i<videos.length; i++){
-            var video = videos[i];
-            var durationMatch = video.querySelector('span#text.style-scope.ytd-thumbnail-overlay-time-status-renderer');
-            if (durationMatch) {
-                var durationText = durationMatch.textContent.trim();
-                var durationSeconds = timeToSeconds(durationText);
-                if ((typeof minDuration !== 'undefined' && durationSeconds < timeToSeconds(minDuration)) ||
-                    (typeof maxDuration !== 'undefined' && durationSeconds > timeToSeconds(maxDuration))) {
-                    video.remove();
+                if (durationInSeconds < userMinVideoDuration /* || durationInSeconds > userMaxVideoDuration */ ) {
+                    video.style.display = 'none';
                 }
             }
-        }
+        });
     }
 
-    var run = function() {
-        var videoRows = getVideoRows();
-        for (var i=0; i<videoRows.length; i++){
-            processVideoRow(videoRows[i]);
-        }
-    }
-
-    // without this line of code script may not work in firefox.
-    setTimeout(run, 500);
-
-    setInterval(run, 500);
+    // Run the script every 3 seconds to remove videos dynamically
+    setInterval(removeVideos, 3000);
 })();
